@@ -1,5 +1,5 @@
 # AndroidJsonModel
-Json model 转换
+Json model 转换，支持修改父类json变量的key值
 
 ## Import
 [JitPack](https://jitpack.io/)
@@ -47,6 +47,9 @@ public static class Apple extends Fruit {
     @Override
     public HashMap<String, String> jsonKeyBindingDictionary() {
         HashMap dictionary =  super.jsonKeyBindingDictionary();
+        // change the super json key
+        // left is the var name, right is the json key
+        // 建议使用 AndroidKeyPath 中的方法输入变量名，避免输入的变量名拼写错误
         dictionary.put("name", "aname");
         return dictionary;
     }
