@@ -241,18 +241,7 @@ public class VDJson<T extends VDJsonModelDelegate> {
 
             if (fieldType.isPrimitive()) {
                 Object value = json.get(jsonKey);
-                if (fieldType.equals(int.class)) {
-                    field.set(model, Integer.valueOf(value.toString()));
-                }
-                else if (fieldType.equals(float.class)) {
-                    field.set(model, Float.valueOf(value.toString()));
-                }
-                else if (fieldType.equals(double.class)) {
-                    field.set(model, Double.valueOf(value.toString()));
-                }
-                else if (fieldType.equals(boolean.class)) {
-                    field.set(model, Boolean.valueOf(value.toString()));
-                }
+                field.set(model, value);
             }
             else if (fieldType.equals(String.class)) {
                 field.set(model, json.getString(jsonKey));

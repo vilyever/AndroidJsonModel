@@ -21,7 +21,15 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        Fruit fruiting = new Fruit();
+        fruiting.no = 9;
+        fruiting.name = "test";
+        System.out.println("fruiting " + fruiting.toJson().toString());
+        Fruit jsonFruit = new VDJson<>(Fruit.class).modelFromJsonString(fruiting.toJson().toString());
+        System.out.println("jsonFruit " + jsonFruit.toJson().toString());
+
         Apple apple = new Apple();
+        apple.no = 1;
         apple.name = "apple";
         apple.color = "red";
 
@@ -33,12 +41,14 @@ public class MainActivity extends AppCompatActivity {
 
         for (int i = 0; i < 2; i++) {
             Orange orange = new Orange();
+            orange.no = 2 * i;
             orange.name = "fruit orange " + i;
             orange.weight = "1" + i + "kg";
             basket.fruits.add(orange);
         }
         for (int i = 0; i < 2; i++) {
             Orange orange = new Orange();
+            orange.no = 2 * i + 8;
             orange.name = "orange " + i;
             orange.weight = "1" + i + "kg";
             basket.oranges.add(orange);
@@ -63,6 +73,7 @@ public class MainActivity extends AppCompatActivity {
         buck.apples = new Apple[2];
         for (int i = 0; i < 2; i++) {
             Apple app = new Apple();
+            app.no = i;
             app.name = "app " + i;
             app.color = "yellow " + i;
             buck.apples[i] = app;
@@ -97,6 +108,8 @@ public class MainActivity extends AppCompatActivity {
     public static class Fruit extends VDModel {
         @VDJsonModelDelegate.VDJsonKey("nam")
         public String name;
+
+        public long no;
     }
     public static class Apple extends Fruit {
         @VDJsonModelDelegate.VDJsonKey("col")
