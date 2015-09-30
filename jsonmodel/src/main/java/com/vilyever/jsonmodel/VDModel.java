@@ -78,11 +78,7 @@ public class VDModel implements VDJsonModelDelegate {
     }
 
     public JSONObject toJson() {
-        return VDJson.ModelToJson(self, false);
-    }
-
-    public JSONObject toJsonWithEmptyValue() {
-        return VDJson.ModelToJson(self, true);
+        return VDJson.ModelToJson(self);
     }
 
     public String dateToString(Date date) {

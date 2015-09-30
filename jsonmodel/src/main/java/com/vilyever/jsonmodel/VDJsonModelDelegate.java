@@ -24,8 +24,6 @@ public interface VDJsonModelDelegate {
 
     JSONObject toJson();
 
-    JSONObject toJsonWithEmptyValue();
-
     String dateToString(Date date);
 
     Date stringToDate(String dateString);

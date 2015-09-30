@@ -6,7 +6,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import com.vilyever.jsonmodel.VDJson;
-import com.vilyever.jsonmodel.VDJsonModelDelegate;
 import com.vilyever.jsonmodel.VDModel;
 
 import java.util.ArrayList;
@@ -21,12 +20,36 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        Fruit fruiting = new Fruit();
-        fruiting.no = 9;
-        fruiting.name = "test";
-        System.out.println("fruiting " + fruiting.toJson().toString());
-        Fruit jsonFruit = new VDJson<>(Fruit.class).modelFromJsonString(fruiting.toJson().toString());
-        System.out.println("jsonFruit " + jsonFruit.toJson().toString());
+        Basket b = new Basket();
+        Fruit f = new Fruit();
+        f.no = 9;
+        f.name = "test";
+        b.fruits = new ArrayList<>();
+        b.fruits.add(f);
+        Apple a = new Apple();
+        a.no = 1;
+        a.name = "apple";
+        a.color = "red";
+        b.fruits.add(a);
+
+        Orange o = new Orange();
+        o.no = 7;
+        o.name = "or";
+        o.weight = "2kg";
+        b.apple = o;
+
+        System.out.println("bbbbbbbbbb " + b.toJson().toString());
+        Basket jsonBasket = new VDJson<>(Basket.class).modelFromJsonString(b.toJson().toString());
+        System.out.println("jsonBasket " + jsonBasket.toJson().toString());
+
+
+
+
+
+
+
+
+
 
         Apple apple = new Apple();
         apple.no = 1;
@@ -106,13 +129,13 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public static class Fruit extends VDModel {
-        @VDJsonModelDelegate.VDJsonKey("nam")
+        @VDJsonKey("nam")
         public String name;
 
         public long no;
     }
     public static class Apple extends Fruit {
-        @VDJsonModelDelegate.VDJsonKey("col")
+        @VDJsonKey("col")
         public String color;
 
         @Override
@@ -123,17 +146,17 @@ public class MainActivity extends AppCompatActivity {
         }
     }
     public static class Orange extends Fruit {
-        @VDJsonModelDelegate.VDJsonKey("wei")
+        @VDJsonKey("wei")
         public String weight;
     }
     public static class Basket extends VDModel {
         public List<Fruit> fruits;
 
-        @VDJsonModelDelegate.VDJsonKey("apples")
+        @VDJsonKey("apples")
         public List<Apple> applse;
 
         public List<Orange> oranges;
-        public Apple apple;
+        public Fruit apple;
     }
 
     public static class Buck extends VDModel {

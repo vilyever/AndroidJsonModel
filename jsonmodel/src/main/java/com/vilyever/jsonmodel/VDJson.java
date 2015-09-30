@@ -25,6 +25,8 @@ import java.util.List;
 public class VDJson<T extends VDJsonModelDelegate> {
     private final VDJson self = this;
 
+    private static final String ClassNameJsonKey = "VD_CN";
+
     final Class<T> modelClazz;
 
     public static final VDReflectKit.FieldsExclusionDelegate ReflectExclusionDelegate = new VDReflectKit.FieldsExclusionDelegate() {
@@ -74,7 +76,7 @@ public class VDJson<T extends VDJsonModelDelegate> {
         }
 
         // get all property fields from the model class up to Model_VDKit.class
-        ArrayList<Field> fields = VDReflectKit.getFields(self.modelClazz, VDJsonModelDelegate.class, ReflectExclusionDelegate);
+        List<Field> fields = VDReflectKit.getFields(self.modelClazz, VDJsonModelDelegate.class, ReflectExclusionDelegate);
 
         for (Field field : fields) {
             field.setAccessible(true);
@@ -153,7 +155,7 @@ public class VDJson<T extends VDJsonModelDelegate> {
         return null;
     }
 
-    public static JSONObject ModelToJson(VDJsonModelDelegate model, boolean containEmptyValue) {
+    public static JSONObject ModelToJson(VDJsonModelDelegate model) {
         JSONObject jsonObject = new JSONObject();
 
         if (model == null) {
@@ -167,7 +169,7 @@ public class VDJson<T extends VDJsonModelDelegate> {
         }
 
         // get all property fields from the model class up to Model_VDKit.class
-        ArrayList<Field> fields = VDReflectKit.getFields(model.getClass(), VDJsonModelDelegate.class, ReflectExclusionDelegate);
+        List<Field> fields = VDReflectKit.getFields(model.getClass(), VDJsonModelDelegate.class, ReflectExclusionDelegate);
 
         // set all property to json object
         for (Field field : fields) {
@@ -190,21 +192,8 @@ public class VDJson<T extends VDJsonModelDelegate> {
                 }
 
                 Object value = GetJsonValueFromField(field, model);
-                if (value == null && containEmptyValue) {
-                    jsonObject.put(jsonKey, "");
-                }
-                else if (value != null) {
-                    if (value.toString().equals((new JSONObject()).toString())
-                            && containEmptyValue) {
-                        jsonObject.put(jsonKey, value);
-                    }
-                    else if (value.toString().equals((new JSONArray()).toString())
-                            && containEmptyValue) {
-                        jsonObject.put(jsonKey, value);
-                    }
-                    else {
-                        jsonObject.put(jsonKey, value);
-                    }
+                if (value != null) {
+                    jsonObject.put(jsonKey, value);
                 }
             }
             catch (Exception e) {
@@ -224,7 +213,7 @@ public class VDJson<T extends VDJsonModelDelegate> {
 
         int length = models.size();
         for (int i = 0; i < length; i++) {
-            jsonArray.put(ModelToJson(models.get(i), containEmptyValue));
+            jsonArray.put(ModelToJson(models.get(i)));
         }
 
         return jsonArray;
@@ -329,6 +318,10 @@ public class VDJson<T extends VDJsonModelDelegate> {
     static Object GetJsonValueFromField(Field field, VDJsonModelDelegate model) {
         field.setAccessible(true);
         try {
+            if (field.get(model) == null) {
+                return null;
+            }
+
             Class<?> fieldType = field.getType();
 
             if (fieldType.isPrimitive()) {
@@ -342,25 +335,22 @@ public class VDJson<T extends VDJsonModelDelegate> {
             }
             else if (fieldType.equals(Date.class)) {
                 Date date = (Date) field.get(model);
-                if (date == null) {
-                    return null;
-                }
                 return model.jsonDateFormat().format(date);
             }
             else if (fieldType.isEnum()) {
                 Enum em = (Enum) field.get(model);
-                if (em == null) {
-                    return null;
-                }
-
                 return em.ordinal();
             }
             else if (VDJsonModelDelegate.class.isAssignableFrom(fieldType)) {
                 VDJsonModelDelegate member = (VDJsonModelDelegate)field.get(model);
-                if (member == null) {
-                    return new JSONObject();
+                JSONObject jsonObject = member.toJson();
+                // TODO: 2015/9/30 record class type
+                if (!fieldType.equals(member.getClass())) {
+                    jsonObject.put(ClassNameJsonKey, member.getClass().getName());
+                    Class<?> c = Class.forName(member.getClass().getName());
+                    System.out.println("vvd class " + c);
                 }
-                return member.toJson();
+                return jsonObject;
             }
             else if (List.class.isAssignableFrom(fieldType)) {
                 Type type = field.getGenericType();
@@ -369,10 +359,7 @@ public class VDJson<T extends VDJsonModelDelegate> {
                     Class<?> typeClazz = (Class<?>) parameterizedType.getActualTypeArguments()[0];
 
                     if (VDJsonModelDelegate.class.isAssignableFrom(typeClazz)) {
-                        List<VDJsonModelDelegate> members = (ArrayList<VDJsonModelDelegate>) field.get(model);
-                        if (members == null) {
-                            return new JSONArray();
-                        }
+                        List<VDJsonModelDelegate> members = (List<VDJsonModelDelegate>) field.get(model);
                         int size = members.size();
                         JSONArray jsonArray = new JSONArray();
                         for(int i = 0; i < size; i++) {
@@ -381,10 +368,7 @@ public class VDJson<T extends VDJsonModelDelegate> {
                         return jsonArray;
                     }
                     else {
-                        ArrayList<Object> members = (ArrayList<Object>) field.get(model);
-                        if (members == null) {
-                            return new JSONArray();
-                        }
+                        List<Object> members = (List<Object>) field.get(model);
                         int size = members.size();
                         JSONArray jsonArray = new JSONArray();
                         for(int i = 0; i < size; i++) {
@@ -399,9 +383,6 @@ public class VDJson<T extends VDJsonModelDelegate> {
 
                 if (VDJsonModelDelegate.class.isAssignableFrom(typeClazz)) {
                     Object members = field.get(model);
-                    if (members == null) {
-                        return new JSONArray();
-                    }
                     int length = Array.getLength(members);
                     JSONArray jsonArray = new JSONArray();
                     for(int i = 0; i < length; i++) {
@@ -412,9 +393,6 @@ public class VDJson<T extends VDJsonModelDelegate> {
                 }
                 else {
                     Object members = field.get(model);
-                    if (members == null) {
-                        return new JSONArray();
-                    }
                     int length = Array.getLength(members);
                     JSONArray jsonArray = new JSONArray();
                     for(int i = 0; i < length; i++) {
