@@ -47,64 +47,64 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-
-
-
-
-        Apple apple = new Apple();
-        apple.no = 1;
-        apple.name = "apple";
-        apple.color = "red";
-
-        Basket basket = new Basket();
-        basket.fruits = new ArrayList<>();
-        basket.applse = new ArrayList<>();
-        basket.oranges = new ArrayList<>();
-        basket.apple = apple;
-
-        for (int i = 0; i < 2; i++) {
-            Orange orange = new Orange();
-            orange.no = 2 * i;
-            orange.name = "fruit orange " + i;
-            orange.weight = "1" + i + "kg";
-            basket.fruits.add(orange);
-        }
-        for (int i = 0; i < 2; i++) {
-            Orange orange = new Orange();
-            orange.no = 2 * i + 8;
-            orange.name = "orange " + i;
-            orange.weight = "1" + i + "kg";
-            basket.oranges.add(orange);
-        }
-        for (int i = 0; i < 2; i++) {
-            Apple app = new Apple();
-            app.name = "apple " + i;
-            app.color = "blue " + i;
-            basket.applse.add(app);
-        }
-
-
-        Buck buck = new Buck();
-        buck.baskets = new ArrayList<>();
-        buck.baskets.add(basket);
-        buck.integer = 22;
-        buck.right = true;
-        buck.fnumber = 8.7f;
-        buck.aDouble = 11.13335;
-        buck.type = Type.On;
-        buck.date = new Date(0);
-        buck.apples = new Apple[2];
-        for (int i = 0; i < 2; i++) {
-            Apple app = new Apple();
-            app.no = i;
-            app.name = "app " + i;
-            app.color = "yellow " + i;
-            buck.apples[i] = app;
-        }
-
-        System.out.println("buck " + buck.toJson());
-        Buck jsonBuck = new VDJson<>(Buck.class).modelFromJson(buck.toJson());
-        System.out.println("juck " + jsonBuck.toJson());
+//
+//
+//
+//
+//        Apple apple = new Apple();
+//        apple.no = 1;
+//        apple.name = "apple";
+//        apple.color = "red";
+//
+//        Basket basket = new Basket();
+//        basket.fruits = new ArrayList<>();
+//        basket.applse = new ArrayList<>();
+//        basket.oranges = new ArrayList<>();
+//        basket.apple = apple;
+//
+//        for (int i = 0; i < 2; i++) {
+//            Orange orange = new Orange();
+//            orange.no = 2 * i;
+//            orange.name = "fruit orange " + i;
+//            orange.weight = "1" + i + "kg";
+//            basket.fruits.add(orange);
+//        }
+//        for (int i = 0; i < 2; i++) {
+//            Orange orange = new Orange();
+//            orange.no = 2 * i + 8;
+//            orange.name = "orange " + i;
+//            orange.weight = "1" + i + "kg";
+//            basket.oranges.add(orange);
+//        }
+//        for (int i = 0; i < 2; i++) {
+//            Apple app = new Apple();
+//            app.name = "apple " + i;
+//            app.color = "blue " + i;
+//            basket.applse.add(app);
+//        }
+//
+//
+//        Buck buck = new Buck();
+//        buck.baskets = new ArrayList<>();
+//        buck.baskets.add(basket);
+//        buck.integer = 22;
+//        buck.right = true;
+//        buck.fnumber = 8.7f;
+//        buck.aDouble = 11.13335;
+//        buck.type = Type.On;
+//        buck.date = new Date(0);
+//        buck.apples = new Apple[2];
+//        for (int i = 0; i < 2; i++) {
+//            Apple app = new Apple();
+//            app.no = i;
+//            app.name = "app " + i;
+//            app.color = "yellow " + i;
+//            buck.apples[i] = app;
+//        }
+//
+//        System.out.println("buck " + buck.toJson());
+//        Buck jsonBuck = new VDJson<>(Buck.class).modelFromJson(buck.toJson());
+//        System.out.println("juck " + jsonBuck.toJson());
     }
 
     @Override
