@@ -42,7 +42,7 @@ public class VDJson<T extends VDJsonModelProtocol> {
     public VDJson(Class<T> modelClazz) {
         this.modelClazz = modelClazz;
         if (!VDJsonModelProtocol.class.isAssignableFrom(modelClazz)) {
-            throw new IllegalStateException("The Model to create must implements VDJsonModelDelegate");
+            throw new IllegalStateException("The Model to create must implements VDJsonModelProtocol");
         }
     }
 
