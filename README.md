@@ -17,7 +17,7 @@ Step 2. Add the dependency in the form
 
 ```gradle
 dependencies {
-  compile 'com.github.vilyever:AndroidJsonModel:1.0.5'
+  compile 'com.github.vilyever:AndroidJsonModel:1.1.0'
 }
 ```
 
@@ -37,16 +37,16 @@ void main() {
 }
 
 public static class Fruit extends VDModel {
-    @VDJsonModelDelegate.VDJsonKey("nam")
+    @VDJsonKey("nam")
     public String name;
 }
 public static class Apple extends Fruit {
-    @VDJsonModelDelegate.VDJsonKey("col")
+    @VDJsonKey("col")
     public String color;
 
     @Override
-    public HashMap<String, String> jsonKeyBindingDictionary() {
-        HashMap dictionary =  super.jsonKeyBindingDictionary();
+    public HashMap<String, String> getJsonKeyBindingDictionary() {
+        HashMap dictionary =  super.getJsonKeyBindingDictionary();
         // change the super json key
         // left is the var name, right is the json key
         // 建议使用 AndroidKeyPath 中的方法输入变量名，避免输入的变量名拼写错误
