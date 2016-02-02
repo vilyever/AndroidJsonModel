@@ -130,8 +130,8 @@ public class MainActivity extends AppCompatActivity {
         public String color;
 
         @Override
-        public HashMap<String, String> jsonKeyBindingDictionary() {
-            HashMap dictionary =  super.jsonKeyBindingDictionary();
+        public HashMap<String, String> getJsonKeyBindingDictionary() {
+            HashMap dictionary =  super.getJsonKeyBindingDictionary();
             dictionary.put("name", "aname");
             return dictionary;
         }

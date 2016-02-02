@@ -16,16 +16,18 @@ import java.util.HashMap;
  * Created by vilyever on 2015/8/18.
  * Feature:
  */
-public class VDModel implements VDJsonModelDelegate {
+public class VDModel implements VDJsonModelProtocol {
     private final VDModel self = this;
 
+    private final static SimpleDateFormat DefaultSimpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
-    /* #Constructors */
+
+    /* Constructors */
     public VDModel() {
         // Required empty public constructor
     }
 
-    /* #Overrides */
+    /* Overrides */
     @Override
     public String toString() {
         String description = super.toString();
@@ -35,7 +37,7 @@ public class VDModel implements VDJsonModelDelegate {
         for(Field field : fields) {
             field.setAccessible(true);
             try {
-                String jsonKey = self.jsonKeyBindingDictionary().get(field.getName());
+                String jsonKey = self.getJsonKeyBindingDictionary().get(field.getName());
                 if (jsonKey == null
                         && null != field.getAnnotation(VDJsonKey.class)) {
                     jsonKey = field.getAnnotation(VDJsonKey.class).value();
@@ -63,18 +65,17 @@ public class VDModel implements VDJsonModelDelegate {
         return description;
     }
 
-    /* #Accessors */
 
-    /* #Delegates */
-    // VDJsonModelDelegate
+    /* Delegates */
+    /** {@link VDJsonModelProtocol} */
     @Override
-    public HashMap<String, String> jsonKeyBindingDictionary() {
+    public HashMap<String, String> getJsonKeyBindingDictionary() {
         return new HashMap<>();
     }
 
     @Override
-    public SimpleDateFormat jsonDateFormat() {
-        return new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+    public SimpleDateFormat getJsonDateFormat() {
+        return DefaultSimpleDateFormat;
     }
 
     public JSONObject toJson() {
@@ -82,12 +83,12 @@ public class VDModel implements VDJsonModelDelegate {
     }
 
     public String dateToString(Date date) {
-        return self.jsonDateFormat().format(date);
+        return self.getJsonDateFormat().format(date);
     }
 
     public Date stringToDate(String dateString) {
         try {
-            return self.jsonDateFormat().parse(dateString);
+            return self.getJsonDateFormat().parse(dateString);
         }
         catch (Exception e) {
             e.printStackTrace();
@@ -95,16 +96,5 @@ public class VDModel implements VDJsonModelDelegate {
 
         return null;
     }
-
-    /* #Private Methods */
-
-    /* #Public Methods */
-
-    /* #Classes */
-
-    /* #Interfaces */
-
-    /* #Annotations @interface */
-
-    /* #Enums */
+    /** {@link VDJsonModelProtocol} */
 }
