@@ -17,7 +17,7 @@ Step 2. Add the dependency in the form
 
 ```gradle
 dependencies {
-  compile 'com.github.vilyever:AndroidJsonModel:1.1.0'
+  compile 'com.github.vilyever:AndroidJsonModel:1.2.0'
 }
 ```
 
@@ -33,15 +33,15 @@ void main() {
   // get sample json string
   String jsonString = apple.toJson().toString();
   // generate model from json string
-  apple = new VDJson<>(Apple.class).modelFromJsonString(jsonString);
+  apple = new Json<>(Apple.class).modelFromJsonString(jsonString);
 }
 
-public static class Fruit extends VDModel {
-    @VDJsonKey("nam")
+public static class Fruit extends JsonModel {
+    @JsonKey("nam")
     public String name;
 }
 public static class Apple extends Fruit {
-    @VDJsonKey("col")
+    @JsonKey("col")
     public String color;
 
     @Override
