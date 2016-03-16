@@ -2,7 +2,7 @@ package com.vilyever.jsonmodel;
 
 import android.support.annotation.Nullable;
 
-import com.vilyever.reflectkit.VDReflectKit;
+import com.vilyever.reflectkit.ReflectKit;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -19,30 +19,30 @@ import java.util.HashMap;
 import java.util.List;
 
 /**
- * VDJson
+ * Json
  * AndroidJsonModelConverter <com.vilyever.jsonmodelconverter>
  * Created by vilyever on 2015/8/18.
  * Feature:
  */
-public class VDJson<T extends VDJsonModelProtocol> {
-    private final VDJson self = this;
+public class Json<T extends JsonModelProtocol> {
+    private final Json self = this;
 
     private static final String ClassNameJsonKey = "VD_CN";
 
-    public static final VDReflectKit.FieldsExclusionDelegate ReflectExclusionDelegate = new VDReflectKit.FieldsExclusionDelegate() {
+    public static final ReflectKit.FieldsExclusionDelegate ReflectExclusionDelegate = new ReflectKit.FieldsExclusionDelegate() {
         @Override
         public boolean shouldExclude(Field field) {
-            return (field.getModifiers() & Modifier.STATIC) != 0 || (field.getModifiers() & Modifier.FINAL) != 0 || (field.getModifiers() & Modifier.SYNCHRONIZED) != 0 || (field.getModifiers() & Modifier.VOLATILE) != 0 || (field.getModifiers() & Modifier.TRANSIENT) != 0 || (field.getModifiers() & Modifier.NATIVE) != 0 || (field.getModifiers() & Modifier.INTERFACE) != 0 || (field.getModifiers() & Modifier.STRICT) != 0 || (field.getModifiers() & Modifier.ABSTRACT) != 0 || null != field.getAnnotation(VDJsonModelProtocol.VDJsonKeyIgnore.class);
+            return (field.getModifiers() & Modifier.STATIC) != 0 || (field.getModifiers() & Modifier.FINAL) != 0 || (field.getModifiers() & Modifier.SYNCHRONIZED) != 0 || (field.getModifiers() & Modifier.VOLATILE) != 0 || (field.getModifiers() & Modifier.TRANSIENT) != 0 || (field.getModifiers() & Modifier.NATIVE) != 0 || (field.getModifiers() & Modifier.INTERFACE) != 0 || (field.getModifiers() & Modifier.STRICT) != 0 || (field.getModifiers() & Modifier.ABSTRACT) != 0 || null != field.getAnnotation(JsonModelProtocol.JsonKeyIgnore.class);
         }
     };
 
     final Class<T> modelClazz;
 
     /* #Constructors */
-    public VDJson(Class<T> modelClazz) {
+    public Json(Class<T> modelClazz) {
         this.modelClazz = modelClazz;
-        if (!VDJsonModelProtocol.class.isAssignableFrom(modelClazz)) {
-            throw new IllegalStateException("The Model to create must implements VDJsonModelProtocol");
+        if (!JsonModelProtocol.class.isAssignableFrom(modelClazz)) {
+            throw new IllegalStateException("The Model to create must implements JsonModelProtocol");
         }
     }
 
@@ -58,7 +58,7 @@ public class VDJson<T extends VDJsonModelProtocol> {
             return null;
         }
 
-        Class<?> typeClazz = self.modelClazz;
+        Class<?> typeClazz = this.modelClazz;
         try {
             if (json.has(ClassNameJsonKey)) {
                 typeClazz = Class.forName(json.getString(ClassNameJsonKey));
@@ -85,8 +85,8 @@ public class VDJson<T extends VDJsonModelProtocol> {
             jsonKeyBindingDictionary = new HashMap<>();
         }
 
-        // get all property fields from the model class up to Model_VDKit.class
-        List<Field> fields = VDReflectKit.getFields(typeClazz, VDJsonModelProtocol.class, ReflectExclusionDelegate);
+        // get all property fields from the model class up to JsonModel.class
+        List<Field> fields = ReflectKit.getFields(typeClazz, JsonModelProtocol.class, ReflectExclusionDelegate);
 
         for (Field field : fields) {
             field.setAccessible(true);
@@ -98,9 +98,9 @@ public class VDJson<T extends VDJsonModelProtocol> {
                     String jsonKey = jsonKeyBindingDictionary.get(fieldName);
                     PutJsonValueToField(field, model, json, jsonKey);
                 }
-                else if (field.getAnnotation(VDJsonModelProtocol.VDJsonKey.class) != null) {
+                else if (field.getAnnotation(JsonModelProtocol.JsonKey.class) != null) {
                     // if the json value  no setted by binding keys, check if annotationJsonKey exist
-                    String jsonKey = field.getAnnotation(VDJsonModelProtocol.VDJsonKey.class).value();
+                    String jsonKey = field.getAnnotation(JsonModelProtocol.JsonKey.class).value();
                     PutJsonValueToField(field, model, json, jsonKey);
                 }
                 else {
@@ -129,7 +129,7 @@ public class VDJson<T extends VDJsonModelProtocol> {
         }
 
         try {
-            return (T) self.modelFromJson(new JSONObject(jsonString));
+            return (T) modelFromJson(new JSONObject(jsonString));
         }
         catch (Exception e) {
             e.printStackTrace();
@@ -186,7 +186,7 @@ public class VDJson<T extends VDJsonModelProtocol> {
      * @param model model
      * @return 转换的json
      */
-    public static JSONObject ModelToJson(VDJsonModelProtocol model) {
+    public static JSONObject ModelToJson(JsonModelProtocol model) {
         JSONObject jsonObject = new JSONObject();
 
         if (model == null) {
@@ -199,8 +199,8 @@ public class VDJson<T extends VDJsonModelProtocol> {
             jsonKeyBindingDictionary = new HashMap<>();
         }
 
-        // get all property fields from the model class up to Model_VDKit.class
-        List<Field> fields = VDReflectKit.getFields(model.getClass(), VDJsonModelProtocol.class, ReflectExclusionDelegate);
+        // get all property fields from the model class up to JsonModel.class
+        List<Field> fields = ReflectKit.getFields(model.getClass(), JsonModelProtocol.class, ReflectExclusionDelegate);
 
         // set all property to json object
         for (Field field : fields) {
@@ -213,9 +213,9 @@ public class VDJson<T extends VDJsonModelProtocol> {
                     // if property'Name Reflect the Json Key in getJsonKeyBindingDictionary, set it
                     jsonKey = jsonKeyBindingDictionary.get(fieldName);
                 }
-                else if (null != field.getAnnotation(VDJsonModelProtocol.VDJsonKey.class) ) {
+                else if (null != field.getAnnotation(JsonModelProtocol.JsonKey.class) ) {
                     // if the json value no setted by binding keys, check if annotationJsonKey exist
-                    jsonKey = field.getAnnotation(VDJsonModelProtocol.VDJsonKey.class).value();
+                    jsonKey = field.getAnnotation(JsonModelProtocol.JsonKey.class).value();
                 }
                 else {
                     // if the json value no setted by binding keys and annotationJsonKey, set as property'name
@@ -240,7 +240,7 @@ public class VDJson<T extends VDJsonModelProtocol> {
      * @param models model集合
      * @return 转换的JSONArray
      */
-    public static JSONArray ModelsToJson(List<VDJsonModelProtocol> models, boolean containEmptyValue) {
+    public static JSONArray ModelsToJson(List<JsonModelProtocol> models, boolean containEmptyValue) {
         JSONArray jsonArray = new JSONArray();
 
         if (models == null) {
@@ -263,7 +263,7 @@ public class VDJson<T extends VDJsonModelProtocol> {
      * @param json json
      * @param jsonKey 当前变量对应的json键
      */
-    static void PutJsonValueToField(Field field, VDJsonModelProtocol model, JSONObject json, String jsonKey) {
+    static void PutJsonValueToField(Field field, JsonModelProtocol model, JSONObject json, String jsonKey) {
         field.setAccessible(true);
         try {
             if (!json.has(jsonKey)) {
@@ -304,12 +304,12 @@ public class VDJson<T extends VDJsonModelProtocol> {
                     field.set(model, enums[ordinal]);
                 }
             }
-            else if (VDJsonModelProtocol.class.isAssignableFrom(fieldType)) {
-                Class<? extends VDJsonModelProtocol> typeClazz = (Class<? extends VDJsonModelProtocol>) fieldType;
+            else if (JsonModelProtocol.class.isAssignableFrom(fieldType)) {
+                Class<? extends JsonModelProtocol> typeClazz = (Class<? extends JsonModelProtocol>) fieldType;
                 if (json.getJSONObject(jsonKey).has(ClassNameJsonKey)) {
-                    typeClazz = (Class<? extends VDJsonModelProtocol>) Class.forName(json.getJSONObject(jsonKey).getString(ClassNameJsonKey));
+                    typeClazz = (Class<? extends JsonModelProtocol>) Class.forName(json.getJSONObject(jsonKey).getString(ClassNameJsonKey));
                 }
-                field.set(model, new VDJson<>(typeClazz).modelFromJsonString(json.getString(jsonKey)));
+                field.set(model, new Json<>(typeClazz).modelFromJsonString(json.getString(jsonKey)));
             }
             else if (List.class.isAssignableFrom(fieldType)) {
                 Type type = field.getGenericType();
@@ -317,8 +317,8 @@ public class VDJson<T extends VDJsonModelProtocol> {
                     ParameterizedType parameterizedType = (ParameterizedType)type;
                     Class<?> typeClazz = (Class<?>) parameterizedType.getActualTypeArguments()[0];
 
-                    if (VDJsonModelProtocol.class.isAssignableFrom(typeClazz)) {
-                        field.set(model, new VDJson<>((Class<? extends VDJsonModelProtocol>) typeClazz).modelsFromJsonString(json.getString(jsonKey)));
+                    if (JsonModelProtocol.class.isAssignableFrom(typeClazz)) {
+                        field.set(model, new Json<>((Class<? extends JsonModelProtocol>) typeClazz).modelsFromJsonString(json.getString(jsonKey)));
                     }
                     else {
                         JSONArray jsonArray = json.getJSONArray(jsonKey);
@@ -334,8 +334,8 @@ public class VDJson<T extends VDJsonModelProtocol> {
             else if (fieldType.isArray()) {
                 Class<?> typeClazz = fieldType.getComponentType();
 
-                if (VDJsonModelProtocol.class.isAssignableFrom(typeClazz)) {
-                    List<? extends VDJsonModelProtocol> members = new VDJson<>((Class<? extends VDJsonModelProtocol>) typeClazz).modelsFromJsonString(json.getString(jsonKey));
+                if (JsonModelProtocol.class.isAssignableFrom(typeClazz)) {
+                    List<? extends JsonModelProtocol> members = new Json<>((Class<? extends JsonModelProtocol>) typeClazz).modelsFromJsonString(json.getString(jsonKey));
                     int size = members.size();
                     Object array = Array.newInstance(typeClazz, size);
                     for(int i = 0; i < size; i++) {
@@ -369,7 +369,7 @@ public class VDJson<T extends VDJsonModelProtocol> {
      * @return 变量对应的值
      */
     @Nullable
-    static Object GetJsonValueFromField(Field field, VDJsonModelProtocol model) {
+    static Object GetJsonValueFromField(Field field, JsonModelProtocol model) {
         field.setAccessible(true);
         try {
             if (field.get(model) == null) {
@@ -395,8 +395,8 @@ public class VDJson<T extends VDJsonModelProtocol> {
                 Enum em = (Enum) field.get(model);
                 return em.ordinal();
             }
-            else if (VDJsonModelProtocol.class.isAssignableFrom(fieldType)) {
-                VDJsonModelProtocol member = (VDJsonModelProtocol)field.get(model);
+            else if (JsonModelProtocol.class.isAssignableFrom(fieldType)) {
+                JsonModelProtocol member = (JsonModelProtocol)field.get(model);
                 JSONObject jsonObject = member.toJson();
                 if (!fieldType.equals(member.getClass())) {
                     jsonObject.put(ClassNameJsonKey, member.getClass().getName());
@@ -409,8 +409,8 @@ public class VDJson<T extends VDJsonModelProtocol> {
                     ParameterizedType parameterizedType = (ParameterizedType)type;
                     Class<?> typeClazz = (Class<?>) parameterizedType.getActualTypeArguments()[0];
 
-                    if (VDJsonModelProtocol.class.isAssignableFrom(typeClazz)) {
-                        List<VDJsonModelProtocol> members = (List<VDJsonModelProtocol>) field.get(model);
+                    if (JsonModelProtocol.class.isAssignableFrom(typeClazz)) {
+                        List<JsonModelProtocol> members = (List<JsonModelProtocol>) field.get(model);
                         int size = members.size();
                         JSONArray jsonArray = new JSONArray();
                         for(int i = 0; i < size; i++) {
@@ -436,12 +436,12 @@ public class VDJson<T extends VDJsonModelProtocol> {
             else if (fieldType.isArray()) {
                 Class<?> typeClazz = fieldType.getComponentType();
 
-                if (VDJsonModelProtocol.class.isAssignableFrom(typeClazz)) {
+                if (JsonModelProtocol.class.isAssignableFrom(typeClazz)) {
                     Object members = field.get(model);
                     int length = Array.getLength(members);
                     JSONArray jsonArray = new JSONArray();
                     for(int i = 0; i < length; i++) {
-                        VDJsonModelProtocol member = (VDJsonModelProtocol) Array.get(members, i);
+                        JsonModelProtocol member = (JsonModelProtocol) Array.get(members, i);
                         JSONObject jsonObject = member.toJson();
                         if (!typeClazz.equals(member.getClass())) {
                             jsonObject.put(ClassNameJsonKey, member.getClass().getName());

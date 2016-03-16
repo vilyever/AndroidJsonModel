@@ -11,12 +11,12 @@ import java.util.Date;
 import java.util.HashMap;
 
 /**
- * VDJsonModelProtocol
+ * JsonModelProtocol
  * AndroidJsonModelConverter <com.vilyever.jsonmodelconverter>
  * Created by vilyever on 2015/8/18.
  * Feature:
  */
-public interface VDJsonModelProtocol {
+public interface JsonModelProtocol {
 
     /**
      * 属性变量名对应json键值，("propertyName" : "jsonKey")
@@ -55,7 +55,7 @@ public interface VDJsonModelProtocol {
      */
     @Retention(RetentionPolicy.RUNTIME)
     @Target(ElementType.FIELD)
-    @interface VDJsonKey {
+    @interface JsonKey {
 
         /**
          * @return json key
@@ -68,7 +68,7 @@ public interface VDJsonModelProtocol {
      */
     @Retention(RetentionPolicy.RUNTIME)
     @Target(ElementType.FIELD)
-    @interface VDJsonKeyIgnore {
+    @interface JsonKeyIgnore {
     }
 
 }

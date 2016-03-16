@@ -5,8 +5,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 
-import com.vilyever.jsonmodel.VDJson;
-import com.vilyever.jsonmodel.VDModel;
+import com.vilyever.jsonmodel.Json;
+import com.vilyever.jsonmodel.JsonModel;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -39,7 +39,7 @@ public class MainActivity extends AppCompatActivity {
         b.apple = o;
 
         System.out.println("bbbbbbbbbb " + b.toJson().toString());
-        Basket jsonBasket = new VDJson<>(Basket.class).modelFromJsonString(b.toJson().toString());
+        Basket jsonBasket = new Json<>(Basket.class).modelFromJsonString(b.toJson().toString());
         System.out.println("jsonBasket " + jsonBasket.toJson().toString());
 
         Apple apple = new Apple();
@@ -94,7 +94,7 @@ public class MainActivity extends AppCompatActivity {
         }
 
         System.out.println("buck " + buck.toJson());
-        Buck jsonBuck = new VDJson<>(Buck.class).modelFromJson(buck.toJson());
+        Buck jsonBuck = new Json<>(Buck.class).modelFromJson(buck.toJson());
         System.out.println("juck " + jsonBuck.toJson());
     }
 
@@ -119,14 +119,14 @@ public class MainActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    public static class Fruit extends VDModel {
-        @VDJsonKey("nam")
+    public static class Fruit extends JsonModel {
+        @JsonKey("nam")
         public String name;
 
         public long no;
     }
     public static class Apple extends Fruit {
-        @VDJsonKey("col")
+        @JsonKey("col")
         public String color;
 
         @Override
@@ -137,23 +137,23 @@ public class MainActivity extends AppCompatActivity {
         }
     }
     public static class Orange extends Fruit {
-        @VDJsonKey("wei")
+        @JsonKey("wei")
         public String weight;
     }
-    public static class Basket extends VDModel {
+    public static class Basket extends JsonModel {
         public List<Fruit> fruits;
 
-        @VDJsonKey("apples")
+        @JsonKey("apples")
         public List<Apple> applse;
 
         public List<Orange> oranges;
         public Fruit apple;
     }
 
-    public static class Buck extends VDModel {
+    public static class Buck extends JsonModel {
         public List<Basket> baskets;
 
-        @VDJsonKeyIgnore
+        @JsonKeyIgnore
         public int integer;
 
         public float fnumber;
